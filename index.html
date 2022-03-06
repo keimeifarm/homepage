@@ -5,37 +5,42 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script type="text/javascript" src="js/script.js" charset="utf-8"></script>
   <script type="text/javascript" src="js/siema.min.js" charset="utf-8"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
-  <div id="title">
-    <img src="./img/logo.png" alt="img"><br>
-  </div>
   <ul id="menu">
+    <div id="title"><a href="https://keimeifarm.github.io/homepage/"><img src="./img/head_logo.png" alt="img"></a></div>
     <li><a href="#act_top" class="selected">トップ</a></li>
     <li><a href="#act_pct">つぶやき</a></li>
     <li><a href="#act_charge">料金</a></li>
     <li><a href="#act_info">概要</a></li>
     <li><a href="#act_contact">お問合わせ</a></li>
   </ul>
-  <br>
-
+  <br><br><br>
   <ul id="panel">
     <li id="act_top">
-    <div class="fade">
-      <img src="./img/top.jpg" alt="img"><br>
+      <div class="fade">
+        <div class="img_inner">
+          <img class="img_logo" src="./img/top_logo.png" alt="img">
+          <img class="img" src="./img/top_01.jpg" alt="img">
+          <img class="img" src="./img/top_02.jpg" alt="img">
+          <img class="img" src="./img/top_03.jpg" alt="img">
+          <img class="img" src="./img/top_04.jpg" alt="img">
+        </div>
+      </div>
     </div>
-    <h2 class=center>ケイメイ牧場のコンセプト</h2><br>
-    <h1 class=center>私たちは馬のしあわせを<br>
-                     考えています。</h1><br>
+    <hr>
+    <h1 class=center>お世話になったあの馬に… <br></h1>
+    <br>
     <div class=center>
-      これまで人々の生活を豊かにしてくれた、養老馬たちの余生を<br>
-      自然の中でゆっくり安全に過ごしてほしい。<br>
-      あたたかい日光を浴び、安全なごはんを食べ、あんしんして眠ってほしい。<br>
-      <br>
-      それがケイメイ牧場の思いです。<br>
+      馬に関わった人なら誰でも思い出の1頭がいるはずです。<br>
+      癒やされ感動を味わい、時に心の支えとなった<br>
+      お世話になったあの馬に…<br><br>
+      あなたにとってかけがえのない1頭に、感謝をこめて恩返しをしませんか。<br>
+      あなたと馬、これからも共に幸せになってほしい。<br>
+      それがケイメイ牧場の想いです。<br>
     </div>
-    <br><br><br>
     <br><br><br>
 
     <!--
@@ -86,6 +91,11 @@
 
   
     <li id="act_pct">
+      <div class="fade center">
+        <br><br>
+        <h1>つぶやき</h1>
+        <div class="translation">Tweet</div>
+      </div>
       <div class="center">
         <a class="twitter-timeline" data-lang="ja" data-theme="light" href="https://twitter.com/keimeifarm?ref_src=twsrc%5Etfw">Tweets by keimeifarm</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       </div>
@@ -93,19 +103,81 @@
 
 
     <li id="act_charge">
-      <div class="fade">
-        <!-- <img src="./img/top.jpg" alt="img"><br> -->
+      <div class="fade center">
+        <br><br>
+        <h1>料金</h1>
+        <div class="translation">Charge</div>
+        <img class="menu_image" src="./img/charge.jpg" alt="img"><br>
       </div>
+      <table class="center">
+        <tr>
+          <th class="right">預託費用　</th>
+          <td class="left"><span class="s2">月額</span>100,000<span class="s2">+税</span></td>
+        </tr>
+        <tr>
+          <th class="right">入厩料　</th>
+          <td class="left">なし</td>
+        </tr>
+      </table>
+      <div class="center">
+        預託費用は、飼料・装蹄・健診・駆虫・予防接種込みとなります。<br>
+        牧場内で可能な治療の場合の費用はかかりません。<br>
+        複数人で共同のオーナーとして預託も可能です。<br>
+        <br><br>
+        ※ご注意※<br>
+        健康状態の悪化に伴い、<br>
+        獣医師による治療が必要となった場合の治療費は<br>
+        オーナー様の負担となります。<br>
+      </div>
+
+      <br><br><br>
+      <hr>
+
+      <div class="fade center">
+        <br>
+        <h1>サービス</h1>
+        <div class="translation">Service</div>
+        <img class="menu_image" src="./img/service.jpg" alt="img"><br>
+      </div>
+      <table class="center">
+        <tr>
+          <th class="right">健康状態の記録　</th>
+          <td class="left">閲覧可（仮）</td>
+        </tr>
+      </table>
+      <div class="center">
+        毎日、体重、検温、馬房掃除、放牧を行い<br>
+        健康状態をお伝えします。<br>
+        オーナー様は営業時間中来厩可能で<br>
+        手入れやふれあいも自由に行っていただけます。<br>
+        ※営業時間は7:00〜日没まで。<br>
+        　日没は季節によって変わります。<br>
+      </div>
+
+      <br><br><br>
+      <hr>
+
+      <div class="fade center">
+        <br>
+        みんなの愛馬（仮）<br>
+        オーナー様のついていない馬は、みんなの愛馬として<br>
+        一口3000円の寄付を募っております。<br>
+        馬の健康状態にもよりますが、寄付を頂いた方には<br>
+        一口につき1時間、馬とのふれあいを楽しんでいただけます。<br>
       <br>
-      COMING SOON
+      <br>
+      <br>
     </li>
 
 
 
 
     <li id="act_info">
-      <br>
-      <span class="caption">概要</span><br>
+      <div class="fade center">
+        <br><br>
+        <h1>概要</h1>
+        <div class="translation">Overview</div>
+      </div>
       <table>
         <tr>
           <th align="right">牧場名:</th>
@@ -137,23 +209,51 @@
         </tr> -->
       </table>
   
-       <br><br><br>
+      <br><br><br>
+      <hr>
   
-      <span class="caption">アクセス</span><br>
+      <div class="fade center">
+        <br>
+        <h1>アクセス</h1>
+        <div class="translation">Access</div>
         <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d210183.31042953295!2d133.9940446505361!3d34.601273000000006!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3554748026e3b9d5%3A0xdf00505044c93500!2zMzTCsDM2JzA2LjAiTiAxMzTCsDA3JzU2LjkiRQ!5e0!3m2!1sja!2sjp!4v1632844366579!5m2!1sja!2sjp" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </span>
 
       <br><br><br>
+      <hr>
+
+      現在、従業員は募集しておりません。<br>
+      <br>
+      当牧場は、養老施設です。乗馬など馬に乗ることは行っておりません。<br>
+      休養馬に限り、オーナー様の指示で調教する場合がございます。<br>
+      <br>
+      <br>
+      <br>
 
     </li>
   
 
     <li id="act_contact">
-      <br>
+      <br><br>
       COMING SOON
     </li>
 
 
+    <hr>
+    <p class="center">
+      <!--
+      <a href="#act_top">トップ</a>
+      <a href="#act_pct">つぶやき</a>
+      <a href="#act_charge">料金</a>
+      <a href="#act_info">概要</a>
+      <a href="#act_contact">お問合わせ</a>
+      -->
+    </p>
+    <p class="center">
+      <a target="_blank" href="https://twitter.com/keimeifarm"><img class="icon_s4" src="./img/icon_twitter.png" alt="icon_twitter"></a>
+    </p>
+    <p class="center">(c) 2022 KeimeiFarm All Rights Reserved.</p>
+    
   </ul>
 <!--
   <div class="footer">

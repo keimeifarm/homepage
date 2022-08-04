@@ -24,6 +24,13 @@ span.s1{
 span.s2{
   font-size: 50%;
 }
+
+/* 取り消し線 */
+span.del{
+  text-decoration: line-through;
+}
+
+
 /* 翻訳 */
 div.translation{
   font-size: 50%;

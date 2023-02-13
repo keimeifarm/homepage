@@ -17,7 +17,7 @@ h3{
   font-weight: normal;
 }
 span.s1{
-  font-size: 120%;
+  font-size: 130%;
   font-weight: bold;
   color: #880007;
 }
@@ -58,14 +58,18 @@ hr{
 }
 
 
+/* センタリング */
 .center{
   margin: 10px auto;
   text-align: center;
   white-space: nowrap;
 }
+
+/* 左よせ */
 .left{
   text-align: left;
 }
+/* 右よせ */
 .right{
   text-align: right;
 }
@@ -132,6 +136,22 @@ a.return:hover{
   background-color: #333333;
   color: #FFF;
 }
+
+/* 更新情報*/
+.update_info{
+  text-align: center;
+  margin-left: 20%;
+  margin-right: 20%;
+  height: 150px;
+  white-space: nowrap;
+  overflow: scroll;
+}
+
+.update_info p{
+  font-size: 150%;
+  text-align: left;
+}
+
 
 /* 応援する右下ボタン */
 a img.adv{

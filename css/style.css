@@ -330,10 +330,10 @@ div.wp{
   text-decoration: none;
   border-radius: 10px;
 }
-#footer li a.s1{
-  font-size: 70%;
+span.s1{
+  font-size: 200%;
 }
-p.s1{
+#footer li a.s4{
   font-size: 70%;
 }
 

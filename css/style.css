@@ -302,6 +302,10 @@ table tr th, td{
   **/
 }
 
+/* リンクイメージ */
+.news_img img{
+  border-radius: 50px;
+}
 
 /* メッセージ */
 div.wp{

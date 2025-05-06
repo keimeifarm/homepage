@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>神経衰弱ゲーム</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      background-color: #f0f0f0;
+      font-family: sans-serif;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    #score-area {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #bonus {
+      color: blue;
+      font-weight: bold;
+      margin-left: 10px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #result-message {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      padding-top: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      display: none;
+    }
+
+    #result-message img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 10px;
+      width: calc(100vmin - 60px);
+      height: calc(100vmin - 60px);
+      max-width: 90vmin;
+      max-height: 90vmin;
+      margin: 0 auto;
+      margin-top: 60px;
+      perspective: 1000px;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      cursor: pointer;
+      border-radius: 10px;
+      transform-style: preserve-3d;
+      transition: transform 0.2s;
+    }
+
+    .card-inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 2px solid #333;
+      border-radius: 10px;
+      transform-style: preserve-3d;
+      transition: transform 0.2s;
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+    }
+
+    .card-front {
+      transform: rotateY(180deg);
+    }
+
+    .card-back {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="score-area">Score: <span id="score">0</span><span id="bonus"></span></div>
+  <div id="result-message"><img src="img/owner.png" alt=""><span id="message"></span></div>
+  <div id="board"></div>
+
+  <script>
+    const imageNames = [
+      "img_matane.jpg",
+      "img_oyasumi.jpg",
+      "img_arigatou.jpg",
+      "img_nakeru.jpg",
+      "img_kininaru.jpg",
+      "img_yabai.jpg",
+      "img_konbanwa.jpg",
+      "img_murishinaide.jpg",
+      "img_yasasii.jpg",
+      "img_simatta.jpg",
+      "img_douitashimashite.jpg",
+      "img_wakatta.jpg",
+      "img_tasukaru.jpg",
+      "img_omedetou.jpg",
+      "img_tashikani.jpg",
+      "img_okoruyo.jpg",
+      "img_wakuwaku.jpg",
+      "img_konnichiwa.jpg",
+      "img_onakasuita.jpg",
+      "img_doyukoto.jpg",
+      "img_shibashiomachwo.jpg",
+      "img_tehe.jpg",
+      "img_gomen.jpg",
+      "img_ohayou.jpg",
+      "img_muka.jpg",
+      "img_zuko-.jpg",
+      "img_makasete.jpg",
+      "img_tanoshindekitene.jpg",
+      "img_okotowari.jpg",
+      "img_iine.jpg",
+      "img_mondainai.jpg",
+      "img_ouenshiteru.jpg",
+      "img_sugoi.jpg",
+      "img_yoroshiku.jpg",
+      "img_saitei.jpg",
+      "img_e.jpg",
+      "img_bikkuri.jpg",
+      "img_hima.jpg",
+      "img_saikou.jpg",
+      "img_otsukare.jpg"
+    ];
+
+    const board = document.getElementById("board");
+    const scoreElem = document.getElementById("score");
+    const bonusElem = document.getElementById("bonus");
+    const resultMessage = document.getElementById("result-message");
+    const messageText = document.getElementById("message");
+
+    let images = [];
+    let firstCard = null;
+    let lock = false;
+    let turns = 0;
+    let score = 0;
+    let matchedPairs = 0;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function getPointsForTurn(turn) {
+      if (turn <= 2) return 200;
+      if (turn <= 8) return 100;
+      if (turn <= 11) return 80;
+      if (turn <= 14) return 60;
+      if (turn <= 17) return 30;
+      return 10;
+    }
+
+    function showBonus(points) {
+      bonusElem.textContent = `+${points}`;
+      bonusElem.style.opacity = 1;
+      setTimeout(() => bonusElem.style.opacity = 0, 800);
+    }
+
+    function showResultMessage(score) {
+      let msg = "がんばって！";
+      if (score >= 81 && score <= 200) msg = "まだまだいけるよ！";
+      else if (score <= 400) msg = "いい調子！";
+      else if (score <= 500) msg = "いい感じです！";
+      else if (score <= 600) msg = "すごい！";
+      else if (score <= 700) msg = "すごすぎ！！";
+      else if (score <= 799) msg = "ええ！？";
+      else if (score === 800) msg = "うっそ！？！？";
+      resultMessage.style.display = "flex";
+      messageText.textContent = msg;
+    }
+
+    function createCard(image) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.image = image;
+
+      const inner = document.createElement("div");
+      inner.className = "card-inner";
+
+      const front = document.createElement("div");
+      front.className = "card-front";
+      const img = document.createElement("img");
+      img.src = `img/${image}`;
+      front.appendChild(img);
+
+      const back = document.createElement("div");
+      back.className = "card-back";
+      back.style.backgroundImage = "url('img/card.jpg')";
+
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+
+      card.addEventListener("click", () => {
+        if (lock || card.classList.contains("flipped")) return;
+        card.classList.add("flipped");
+
+        if (!firstCard) {
+          firstCard = card;
+        } else {
+          lock = true;
+          turns++;
+          if (card.dataset.image === firstCard.dataset.image) {
+            const points = getPointsForTurn(turns);
+            score += points;
+            scoreElem.textContent = score;
+            showBonus(points);
+            matchedPairs++;
+            firstCard = null;
+            lock = false;
+            if (matchedPairs === 8) {
+              setTimeout(() => showResultMessage(score), 500);
+            }
+          } else {
+            setTimeout(() => {
+              card.classList.remove("flipped");
+              firstCard.classList.remove("flipped");
+              firstCard = null;
+              lock = false;
+            }, 800);
+          }
+        }
+      });
+
+      return card;
+    }
+
+    function init() {
+      const selectedImages = shuffle(imageNames).slice(0, 8);
+      images = shuffle([...selectedImages, ...selectedImages]);
+      images.forEach(image => {
+        const card = createCard(image);
+        board.appendChild(card);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

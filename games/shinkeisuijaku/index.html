@@ -208,8 +208,11 @@
       else if (score <= 500) msg = "いい感じです！";
       else if (score <= 600) msg = "すごい！";
       else if (score <= 700) msg = "すごすぎ！！";
-      else if (score <= 799) msg = "ええ！？";
-      else if (score === 800) msg = "うっそ！？！？";
+      else if (score <= 800) msg = "すごすぎます！！";
+      else if (score <= 900) msg = "プロ！！？";
+      else if (score <= 950) msg = "うっそ！！？";
+      else if (score === 1000) msg = "えーー信じられない！！";
+      else if (score >= 1001) msg = "....ズルしてない？";
       resultMessage.style.display = "flex";
       messageText.textContent = msg;
     }

@@ -307,6 +307,11 @@ table tr th, td{
   border-radius: 50px;
 }
 
+/* ゲームイメージ */
+.game_img{
+  border-radius: 20px;
+}
+
 /* メッセージ */
 div.wp{
   margin: 20px 8% 20px 8%;

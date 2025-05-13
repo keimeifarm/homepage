@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <title>Memory Match 4x4</title>
+  <title>ケイメイ神経衰弱4x4</title>
   <style>
     body {
       margin: 0;
@@ -13,6 +13,17 @@
       font-family: sans-serif;
       box-sizing: border-box;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
     }
     #score-area {
       position: absolute;
@@ -29,35 +40,37 @@
       transition: opacity 0.8s ease;
     }
     #result-message {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      bottom: 30px;
+      position: fixed;
+      bottom: 15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 100%;
-      padding-top: 10px;
+      z-index: 1000; /* カードより前面に出す */
+      background-color: rgba(255, 255, 255, 0.9); /* 半透明背景を追加すると視認性向上 */
+      padding: 10px 20px;
+      border-radius: 10px;
       font-size: 24px;
-      font-weight: bold;
       display: none;
+      white-space: nowrap;
+      overflow-x: auto;
+      max-width: none;
+      align-items: center;
     }
     #result-message img {
       height: 40px;
       margin-right: 10px;
+      max-width: 80vw;
+      object-fit: contain;
+      display: none;
     }
     #board {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(4, 1fr);
       gap: 10px;
-      width: calc(100vmin - 60px);
-      height: calc(100vmin - 60px);
-      max-width: 90vmin;
-      max-height: 90vmin;
-      margin: 0 auto;
-      margin-top: 60px;
+      width: min(90vmin, 100vw - 60px);
+      height: min(90vmin, 100vh - 60px);
       perspective: 1000px;
+      margin-top: 30px;
     }
     .card {
       position: relative;
@@ -170,185 +183,188 @@
   </style>
 </head>
 <body>
-  <div id="score-area">Score: <span id="score">0</span><span id="bonus"></span></div>
-  <div id="result-message"><img src="img/owner.png" alt=""><span id="message"></span></div>
-  <div id="board"></div>
-  <div id="reload-button"><i class="fa-solid fa-rotate-right fa-lg"></i></div>
-  <div id="reload-modal-overlay">
-    <div id="reload-modal-content">
-      <p>やりなおす？</p>
-      <button id="reload-confirm-yes">はい</button>
-      <button id="reload-confirm-no">いいえ</button>
+  <div id="container">
+    <div id="score-area">Score: <span id="score">0</span><span id="bonus"></span></div>
+    <div id="result-message"><img id="result-message-img" src="img/owner.png" alt=""><span id="message"></span></div>
+    <div id="board"></div>
+    <div id="reload-button"><i class="fa-solid fa-rotate-right fa-lg"></i></div>
+    <div id="reload-modal-overlay">
+      <div id="reload-modal-content">
+        <p>やりなおす？</p>
+        <button id="reload-confirm-yes">はい</button>
+        <button id="reload-confirm-no">いいえ</button>
+      </div>
     </div>
-  </div>
-  <div id="home-button"><i class="fa-solid fa-house fa-lg"></i></div>
-  <div id="home-modal-overlay">
-    <div id="home-modal-content">
-      <p>TOPページへ戻りますか？</p>
-      <button id="home-confirm-yes">はい</button>
-      <button id="home-confirm-no">いいえ</button>
+    <div id="home-button"><i class="fa-solid fa-house fa-lg"></i></div>
+    <div id="home-modal-overlay">
+      <div id="home-modal-content">
+        <p>TOPページへ戻りますか？</p>
+        <button id="home-confirm-yes">はい</button>
+        <button id="home-confirm-no">いいえ</button>
+      </div>
     </div>
-  </div>
-
-  <script>
-    const imageNames = [
-      "img_matane.jpg", "img_oyasumi.jpg", "img_arigatou.jpg", "img_nakeru.jpg",
-      "img_kininaru.jpg", "img_yabai.jpg", "img_konbanwa.jpg", "img_murishinaide.jpg",
-      "img_yasasii.jpg", "img_simatta.jpg", "img_douitashimashite.jpg", "img_wakatta.jpg",
-      "img_tasukaru.jpg", "img_omedetou.jpg", "img_tashikani.jpg", "img_okoruyo.jpg",
-      "img_wakuwaku.jpg", "img_konnichiwa.jpg", "img_onakasuita.jpg", "img_doyukoto.jpg",
-      "img_shibashiomachwo.jpg", "img_tehe.jpg", "img_gomen.jpg", "img_ohayou.jpg",
-      "img_muka.jpg", "img_zuko-.jpg", "img_makasete.jpg", "img_tanoshindekitene.jpg",
-      "img_okotowari.jpg", "img_iine.jpg", "img_mondainai.jpg", "img_ouenshiteru.jpg",
-      "img_sugoi.jpg", "img_yoroshiku.jpg", "img_saitei.jpg", "img_e.jpg",
-      "img_bikkuri.jpg", "img_hima.jpg", "img_saikou.jpg", "img_otsukare.jpg"
-    ];
-    const board = document.getElementById("board");
-    const scoreElem = document.getElementById("score");
-    const bonusElem = document.getElementById("bonus");
-    const resultMessage = document.getElementById("result-message");
-    const messageText = document.getElementById("message");
-
-    let firstCard = null;
-    let lock = false;
-    let turns = 0;
-    let score = 0;
-    let matchedPairs = 0;
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+  
+    <script>
+      const imageNames = [
+        "img_matane.jpg", "img_oyasumi.jpg", "img_arigatou.jpg", "img_nakeru.jpg",
+        "img_kininaru.jpg", "img_yabai.jpg", "img_konbanwa.jpg", "img_murishinaide.jpg",
+        "img_yasasii.jpg", "img_simatta.jpg", "img_douitashimashite.jpg", "img_wakatta.jpg",
+        "img_tasukaru.jpg", "img_omedetou.jpg", "img_tashikani.jpg", "img_okoruyo.jpg",
+        "img_wakuwaku.jpg", "img_konnichiwa.jpg", "img_onakasuita.jpg", "img_doyukoto.jpg",
+        "img_shibashiomachwo.jpg", "img_tehe.jpg", "img_gomen.jpg", "img_ohayou.jpg",
+        "img_muka.jpg", "img_zuko-.jpg", "img_makasete.jpg", "img_tanoshindekitene.jpg",
+        "img_okotowari.jpg", "img_iine.jpg", "img_mondainai.jpg", "img_ouenshiteru.jpg",
+        "img_sugoi.jpg", "img_yoroshiku.jpg", "img_saitei.jpg", "img_e.jpg",
+        "img_bikkuri.jpg", "img_hima.jpg", "img_saikou.jpg", "img_otsukare.jpg"
+      ];
+      const board = document.getElementById("board");
+      const scoreElem = document.getElementById("score");
+      const bonusElem = document.getElementById("bonus");
+      const resultMessageImg = document.getElementById("result-message-img");
+      const resultMessage = document.getElementById("result-message");
+      const messageText = document.getElementById("message");
+  
+      let firstCard = null;
+      let lock = false;
+      let turns = 0;
+      let score = 0;
+      let matchedPairs = 0;
+  
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
       }
-      return array;
-    }
-
-    function getPointsForTurn(turn) {
-      if (turn <= 1) return 300;
-      if (turn <= 8) return 100;
-      if (turn <= 11) return 80;
-      if (turn <= 14) return 60;
-      if (turn <= 17) return 30;
-      return 10;
-    }
-
-    function showBonus(points) {
-      bonusElem.textContent = `+${points}`;
-      bonusElem.style.opacity = 1;
-      setTimeout(() => bonusElem.style.opacity = 0, 800);
-    }
-
-    function showResultMessage(score) {
-      let msg = "がんばって！";
-      if (score >= 81 && score <= 200) msg = "まだまだいけるよ！";
-      else if (score <= 400) msg = "いい調子！";
-      else if (score <= 500) msg = "いい感じです！";
-      else if (score <= 600) msg = "すごい！";
-      else if (score <= 700) msg = "すごすぎ！！";
-      else if (score <= 800) msg = "すばらしいです！！";
-      else if (score <= 900) msg = "プロ！！？";
-      else if (score <= 950) msg = "うっそ！！？";
-      else if (score <= 999) msg = "えーー信じられない！！";
-      else if (score === 1000) msg = "うわああ！パーフェクト！！";
-      else if (score >= 1001) msg = "...ズルしてない？";
-      resultMessage.style.display = "flex";
-      messageText.textContent = msg;
-    }
-
-    function createCard(image) {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.dataset.image = image;
-
-      const inner = document.createElement("div");
-      inner.className = "card-inner";
-
-      const front = document.createElement("div");
-      front.className = "card-front";
-      const img = document.createElement("img");
-      img.src = `img/${image}`;
-      front.appendChild(img);
-
-      const back = document.createElement("div");
-      back.className = "card-back";
-      back.style.backgroundImage = "url('img/card.jpg')";
-
-      inner.appendChild(front);
-      inner.appendChild(back);
-      card.appendChild(inner);
-
-      card.addEventListener("click", () => {
-        if (lock || card.classList.contains("flipped")) return;
-        card.classList.add("flipped");
-
-        if (!firstCard) {
-          firstCard = card;
-        } else {
-          lock = true;
-          turns++;
-          if (card.dataset.image === firstCard.dataset.image) {
-            matchedPairs++;
-            const points = getPointsForTurn(turns);
-            score += points;
-            scoreElem.textContent = score;
-            showBonus(points);
-            if (matchedPairs === 8) {
-              setTimeout(() => showResultMessage(score), 500);
-            }
-            firstCard = null;
-            lock = false;
+  
+      function getPointsForTurn(turn) {
+        if (turn <= 1) return 300;
+        if (turn <= 8) return 100;
+        if (turn <= 11) return 80;
+        if (turn <= 14) return 60;
+        if (turn <= 17) return 30;
+        return 10;
+      }
+  
+      function showBonus(points) {
+        bonusElem.textContent = `+${points}`;
+        bonusElem.style.opacity = 1;
+        setTimeout(() => bonusElem.style.opacity = 0, 800);
+      }
+  
+      function showResultMessage(score) {
+        let msg = "がんばって！";
+        if (score >= 81 && score <= 200) msg = "まだまだいけるよ！";
+        else if (score <= 400) msg = "いい調子！";
+        else if (score <= 500) msg = "いい感じです！";
+        else if (score <= 600) msg = "すごい！";
+        else if (score <= 700) msg = "すごすぎ！！";
+        else if (score <= 800) msg = "すばらしいです！！";
+        else if (score <= 900) msg = "プロ！！？";
+        else if (score <= 950) msg = "うっそ！！？";
+        else if (score <= 999) msg = "えーー信じられない！！";
+        else if (score === 1000) msg = "うわああ！パーフェクト！！";
+        else if (score >= 1001) msg = "...ズルしてない？";
+        resultMessage.style.display = "flex";
+        resultMessageImg.style.display = "inline";
+        messageText.textContent = msg;
+      }
+  
+      function createCard(image) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.image = image;
+  
+        const inner = document.createElement("div");
+        inner.className = "card-inner";
+  
+        const front = document.createElement("div");
+        front.className = "card-front";
+        const img = document.createElement("img");
+        img.src = `img/${image}`;
+        front.appendChild(img);
+  
+        const back = document.createElement("div");
+        back.className = "card-back";
+        back.style.backgroundImage = "url('img/card.jpg')";
+  
+        inner.appendChild(front);
+        inner.appendChild(back);
+        card.appendChild(inner);
+  
+        card.addEventListener("click", () => {
+          if (lock || card.classList.contains("flipped")) return;
+          card.classList.add("flipped");
+  
+          if (!firstCard) {
+            firstCard = card;
           } else {
-            setTimeout(() => {
-              card.classList.remove("flipped");
-              firstCard.classList.remove("flipped");
+            lock = true;
+            turns++;
+            if (card.dataset.image === firstCard.dataset.image) {
+              matchedPairs++;
+              const points = getPointsForTurn(turns);
+              score += points;
+              scoreElem.textContent = score;
+              showBonus(points);
+              if (matchedPairs === 8) {
+                setTimeout(() => showResultMessage(score), 500);
+              }
               firstCard = null;
               lock = false;
-            }, 800);
+            } else {
+              setTimeout(() => {
+                card.classList.remove("flipped");
+                firstCard.classList.remove("flipped");
+                firstCard = null;
+                lock = false;
+              }, 800);
+            }
           }
-        }
+        });
+  
+        return card;
+      }
+  
+      function initGame() {
+        const selectedImages = shuffle([...imageNames]).slice(0, 8);
+        const cardImages = shuffle([...selectedImages, ...selectedImages]);
+        cardImages.forEach(image => board.appendChild(createCard(image)));
+      }
+  
+      initGame();
+  
+      // リロードボタンモーダル関連
+      const reloadButton = document.getElementById("reload-button");
+      const reloadModalOverlay = document.getElementById("reload-modal-overlay");
+      const reloadConfirmYes = document.getElementById("reload-confirm-yes");
+      const reloadConfirmNo = document.getElementById("reload-confirm-no");
+      reloadButton.addEventListener("click", () => {
+        reloadModalOverlay.style.display = "flex";
       });
-
-      return card;
-    }
-
-    function initGame() {
-      const selectedImages = shuffle([...imageNames]).slice(0, 8);
-      const cardImages = shuffle([...selectedImages, ...selectedImages]);
-      cardImages.forEach(image => board.appendChild(createCard(image)));
-    }
-
-    initGame();
-
-    // リロードボタンモーダル関連
-    const reloadButton = document.getElementById("reload-button");
-    const reloadModalOverlay = document.getElementById("reload-modal-overlay");
-    const reloadConfirmYes = document.getElementById("reload-confirm-yes");
-    const reloadConfirmNo = document.getElementById("reload-confirm-no");
-    reloadButton.addEventListener("click", () => {
-      reloadModalOverlay.style.display = "flex";
-    });
-    reloadConfirmNo.addEventListener("click", () => {
-      reloadModalOverlay.style.display = "none";
-    });
-    reloadConfirmYes.addEventListener("click", () => {
-      location.reload();
-    });
-
-    // ホームボタンモーダル関連
-    const homeButton = document.getElementById("home-button");
-    const homeModalOverlay = document.getElementById("home-modal-overlay");
-    const homeConfirmYes = document.getElementById("home-confirm-yes");
-    const homeConfirmNo = document.getElementById("home-confirm-no");
-    homeButton.addEventListener("click", () => {
-      homeModalOverlay.style.display = "flex";
-    });
-    homeConfirmNo.addEventListener("click", () => {
-      homeModalOverlay.style.display = "none";
-    });
-    homeConfirmYes.addEventListener("click", () => {
-      window.location.href = "https://keimeifarm.github.io/homepage/";
-    });
-
-  </script>
+      reloadConfirmNo.addEventListener("click", () => {
+        reloadModalOverlay.style.display = "none";
+      });
+      reloadConfirmYes.addEventListener("click", () => {
+        location.reload();
+      });
+  
+      // ホームボタンモーダル関連
+      const homeButton = document.getElementById("home-button");
+      const homeModalOverlay = document.getElementById("home-modal-overlay");
+      const homeConfirmYes = document.getElementById("home-confirm-yes");
+      const homeConfirmNo = document.getElementById("home-confirm-no");
+      homeButton.addEventListener("click", () => {
+        homeModalOverlay.style.display = "flex";
+      });
+      homeConfirmNo.addEventListener("click", () => {
+        homeModalOverlay.style.display = "none";
+      });
+      homeConfirmYes.addEventListener("click", () => {
+        window.location.href = "https://keimeifarm.github.io/homepage/";
+      });
+    </script>
+  </div>
 </body>
 </html>

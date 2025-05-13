@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <title>Memory Match 4x4</title>
   <style>
     body {
@@ -13,7 +14,6 @@
       box-sizing: border-box;
       overflow: hidden;
     }
-
     #score-area {
       position: absolute;
       top: 30px;
@@ -21,7 +21,6 @@
       font-size: 20px;
       font-weight: bold;
     }
-
     #bonus {
       color: blue;
       font-weight: bold;
@@ -29,7 +28,6 @@
       opacity: 0;
       transition: opacity 0.8s ease;
     }
-
     #result-message {
       display: flex;
       align-items: center;
@@ -44,12 +42,10 @@
       font-weight: bold;
       display: none;
     }
-
     #result-message img {
       height: 40px;
       margin-right: 10px;
     }
-
     #board {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -63,7 +59,6 @@
       margin-top: 60px;
       perspective: 1000px;
     }
-
     .card {
       position: relative;
       width: 100%;
@@ -73,7 +68,6 @@
       transform-style: preserve-3d;
       transition: transform 0.2s;
     }
-
     .card-inner {
       position: absolute;
       top: 0;
@@ -85,11 +79,9 @@
       transform-style: preserve-3d;
       transition: transform 0.2s;
     }
-
     .card.flipped .card-inner {
       transform: rotateY(180deg);
     }
-
     .card-front,
     .card-back {
       position: absolute;
@@ -98,21 +90,82 @@
       backface-visibility: hidden;
       border-radius: 10px;
     }
-
     .card-front {
       transform: rotateY(180deg);
     }
-
     .card-back {
       background-size: cover;
       background-position: center;
     }
-
     .card-front img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 10px;
+    }
+    /* リロードボタン*/
+    #reload-button {
+      position: absolute;
+      top: 30px;
+      right: 90px;
+      z-index: 90;
+      cursor: pointer;
+      color: #333;
+    }
+    #reload-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+    #reload-modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    #reload-modal-content button {
+      margin: 10px;
+      padding: 5px 15px;
+      font-size: 16px;
+    }
+    /* ホームボタン*/
+    #home-button {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      z-index: 100;
+      cursor: pointer;
+      color: #333;
+    }
+    #home-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+    #home-modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    #home-modal-content button {
+      margin: 10px;
+      padding: 5px 15px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -120,58 +173,42 @@
   <div id="score-area">Score: <span id="score">0</span><span id="bonus"></span></div>
   <div id="result-message"><img src="img/owner.png" alt=""><span id="message"></span></div>
   <div id="board"></div>
+  <div id="reload-button"><i class="fa-solid fa-rotate-right fa-lg"></i></div>
+  <div id="reload-modal-overlay">
+    <div id="reload-modal-content">
+      <p>やりなおす？</p>
+      <button id="reload-confirm-yes">はい</button>
+      <button id="reload-confirm-no">いいえ</button>
+    </div>
+  </div>
+  <div id="home-button"><i class="fa-solid fa-house fa-lg"></i></div>
+  <div id="home-modal-overlay">
+    <div id="home-modal-content">
+      <p>TOPページへ戻りますか？</p>
+      <button id="home-confirm-yes">はい</button>
+      <button id="home-confirm-no">いいえ</button>
+    </div>
+  </div>
 
   <script>
     const imageNames = [
-      "img_matane.jpg",
-      "img_oyasumi.jpg",
-      "img_arigatou.jpg",
-      "img_nakeru.jpg",
-      "img_kininaru.jpg",
-      "img_yabai.jpg",
-      "img_konbanwa.jpg",
-      "img_murishinaide.jpg",
-      "img_yasasii.jpg",
-      "img_simatta.jpg",
-      "img_douitashimashite.jpg",
-      "img_wakatta.jpg",
-      "img_tasukaru.jpg",
-      "img_omedetou.jpg",
-      "img_tashikani.jpg",
-      "img_okoruyo.jpg",
-      "img_wakuwaku.jpg",
-      "img_konnichiwa.jpg",
-      "img_onakasuita.jpg",
-      "img_doyukoto.jpg",
-      "img_shibashiomachwo.jpg",
-      "img_tehe.jpg",
-      "img_gomen.jpg",
-      "img_ohayou.jpg",
-      "img_muka.jpg",
-      "img_zuko-.jpg",
-      "img_makasete.jpg",
-      "img_tanoshindekitene.jpg",
-      "img_okotowari.jpg",
-      "img_iine.jpg",
-      "img_mondainai.jpg",
-      "img_ouenshiteru.jpg",
-      "img_sugoi.jpg",
-      "img_yoroshiku.jpg",
-      "img_saitei.jpg",
-      "img_e.jpg",
-      "img_bikkuri.jpg",
-      "img_hima.jpg",
-      "img_saikou.jpg",
-      "img_otsukare.jpg"
+      "img_matane.jpg", "img_oyasumi.jpg", "img_arigatou.jpg", "img_nakeru.jpg",
+      "img_kininaru.jpg", "img_yabai.jpg", "img_konbanwa.jpg", "img_murishinaide.jpg",
+      "img_yasasii.jpg", "img_simatta.jpg", "img_douitashimashite.jpg", "img_wakatta.jpg",
+      "img_tasukaru.jpg", "img_omedetou.jpg", "img_tashikani.jpg", "img_okoruyo.jpg",
+      "img_wakuwaku.jpg", "img_konnichiwa.jpg", "img_onakasuita.jpg", "img_doyukoto.jpg",
+      "img_shibashiomachwo.jpg", "img_tehe.jpg", "img_gomen.jpg", "img_ohayou.jpg",
+      "img_muka.jpg", "img_zuko-.jpg", "img_makasete.jpg", "img_tanoshindekitene.jpg",
+      "img_okotowari.jpg", "img_iine.jpg", "img_mondainai.jpg", "img_ouenshiteru.jpg",
+      "img_sugoi.jpg", "img_yoroshiku.jpg", "img_saitei.jpg", "img_e.jpg",
+      "img_bikkuri.jpg", "img_hima.jpg", "img_saikou.jpg", "img_otsukare.jpg"
     ];
-
     const board = document.getElementById("board");
     const scoreElem = document.getElementById("score");
     const bonusElem = document.getElementById("bonus");
     const resultMessage = document.getElementById("result-message");
     const messageText = document.getElementById("message");
 
-    let images = [];
     let firstCard = null;
     let lock = false;
     let turns = 0;
@@ -187,7 +224,7 @@
     }
 
     function getPointsForTurn(turn) {
-      if (turn <= 2) return 200;
+      if (turn <= 1) return 300;
       if (turn <= 8) return 100;
       if (turn <= 11) return 80;
       if (turn <= 14) return 60;
@@ -250,16 +287,16 @@
           lock = true;
           turns++;
           if (card.dataset.image === firstCard.dataset.image) {
+            matchedPairs++;
             const points = getPointsForTurn(turns);
             score += points;
             scoreElem.textContent = score;
             showBonus(points);
-            matchedPairs++;
-            firstCard = null;
-            lock = false;
             if (matchedPairs === 8) {
               setTimeout(() => showResultMessage(score), 500);
             }
+            firstCard = null;
+            lock = false;
           } else {
             setTimeout(() => {
               card.classList.remove("flipped");
@@ -274,16 +311,44 @@
       return card;
     }
 
-    function init() {
-      const selectedImages = shuffle(imageNames).slice(0, 8);
-      images = shuffle([...selectedImages, ...selectedImages]);
-      images.forEach(image => {
-        const card = createCard(image);
-        board.appendChild(card);
-      });
+    function initGame() {
+      const selectedImages = shuffle([...imageNames]).slice(0, 8);
+      const cardImages = shuffle([...selectedImages, ...selectedImages]);
+      cardImages.forEach(image => board.appendChild(createCard(image)));
     }
 
-    init();
+    initGame();
+
+    // リロードボタンモーダル関連
+    const reloadButton = document.getElementById("reload-button");
+    const reloadModalOverlay = document.getElementById("reload-modal-overlay");
+    const reloadConfirmYes = document.getElementById("reload-confirm-yes");
+    const reloadConfirmNo = document.getElementById("reload-confirm-no");
+    reloadButton.addEventListener("click", () => {
+      reloadModalOverlay.style.display = "flex";
+    });
+    reloadConfirmNo.addEventListener("click", () => {
+      reloadModalOverlay.style.display = "none";
+    });
+    reloadConfirmYes.addEventListener("click", () => {
+      location.reload();
+    });
+
+    // ホームボタンモーダル関連
+    const homeButton = document.getElementById("home-button");
+    const homeModalOverlay = document.getElementById("home-modal-overlay");
+    const homeConfirmYes = document.getElementById("home-confirm-yes");
+    const homeConfirmNo = document.getElementById("home-confirm-no");
+    homeButton.addEventListener("click", () => {
+      homeModalOverlay.style.display = "flex";
+    });
+    homeConfirmNo.addEventListener("click", () => {
+      homeModalOverlay.style.display = "none";
+    });
+    homeConfirmYes.addEventListener("click", () => {
+      window.location.href = "https://keimeifarm.github.io/homepage/";
+    });
+
   </script>
 </body>
 </html>

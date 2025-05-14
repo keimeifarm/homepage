@@ -27,8 +27,8 @@
     }
     #score-area {
       position: absolute;
-      top: 30px;
-      left: 30px;
+      top: 20px;
+      left: 20px;
       font-size: 20px;
       font-weight: bold;
     }
@@ -41,7 +41,7 @@
     }
     #result-message {
       position: fixed;
-      bottom: 15px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 1000; /* カードより前面に出す */
@@ -119,8 +119,8 @@
     /* リロードボタン*/
     #reload-button {
       position: absolute;
-      top: 30px;
-      right: 90px;
+      top: 20px;
+      right: 80px;
       z-index: 90;
       cursor: pointer;
       color: #333;
@@ -151,8 +151,8 @@
     /* ホームボタン*/
     #home-button {
       position: absolute;
-      top: 30px;
-      right: 30px;
+      top: 20px;
+      right: 20px;
       z-index: 100;
       cursor: pointer;
       color: #333;
@@ -254,16 +254,67 @@
       }
   
       function showResultMessage(score) {
-        let msg = "がんばって！";
-        if (score >= 81 && score <= 200) msg = "まだまだいけるよ！";
-        else if (score <= 400) msg = "いい調子！";
-        else if (score <= 500) msg = "いい感じです！";
+        let msg = "どんまい！";
+        if (score >= 81 && score <= 300) msg = "まだまだいけるよ！";
+        else if (score <= 360) msg = "がんばって！";
+        else if (score <= 380) msg = "どんどんいこう！";
+        else if (score <= 400) msg = "まあまあ！";
+        else if (score <= 410) msg = "うんうん！";
+        else if (score <= 420) msg = "いい調子！";
+        else if (score <= 430) msg = "その調子！";
+        else if (score <= 440) msg = "いい！";
+        else if (score <= 450) msg = "いいよ！";
+        else if (score <= 460) msg = "イイよ！";
+        else if (score <= 470) msg = "いいよいいよ！";
+        else if (score <= 480) msg = "うんうん！";
+        else if (score <= 490) msg = "まだいけるよ！";
+        else if (score <= 500) msg = "まだまだいける！";
+        else if (score <= 510) msg = "もっといける！";
+        else if (score <= 520) msg = "いい感じです！";
+        else if (score <= 530) msg = "なかなかですね！";
+        else if (score <= 540) msg = "いい事ありそ！";
+        else if (score <= 550) msg = "いい事あるよ！";
+        else if (score <= 560) msg = "いい事あるかも！";
+        else if (score <= 570) msg = "良い良い！";
+        else if (score <= 580) msg = "良い良い良い！";
+        else if (score <= 590) msg = "いいですね！";
         else if (score <= 600) msg = "すごい！";
-        else if (score <= 700) msg = "すごすぎ！！";
-        else if (score <= 800) msg = "すばらしいです！！";
-        else if (score <= 900) msg = "プロ！！？";
-        else if (score <= 950) msg = "うっそ！！？";
-        else if (score <= 999) msg = "えーー信じられない！！";
+        else if (score <= 610) msg = "すごいです！";
+        else if (score <= 620) msg = "すごいよ！";
+        else if (score <= 630) msg = "スゴイよ！";
+        else if (score <= 640) msg = "すっご！";
+        else if (score <= 650) msg = "すごーい！";
+        else if (score <= 660) msg = "すごいなあ！";
+        else if (score <= 670) msg = "すごいと思う！";
+        else if (score <= 680) msg = "すごいよね！";
+        else if (score <= 690) msg = "すごー！";
+        else if (score <= 700) msg = "すごすぎ！";
+        else if (score <= 710) msg = "すばらしいです！！";
+        else if (score <= 720) msg = "プロ！";
+        else if (score <= 730) msg = "プロですか！？";
+        else if (score <= 740) msg = "プロですよね！？";
+        else if (score <= 750) msg = "プロの方ですか！？";
+        else if (score <= 760) msg = "かなりプロ！！";
+        else if (score <= 770) msg = "絶対プロ！！";
+        else if (score <= 780) msg = "本当にプロ！！"; 
+        else if (score <= 790) msg = "本当の本当にプロ！！"; 
+        else if (score <= 800) msg = "うっそ！？";
+        else if (score <= 810) msg = "うっそお！？";
+        else if (score <= 820) msg = "うっそおおー！？";
+        else if (score <= 830) msg = "うっそおおーー！？";
+        else if (score <= 840) msg = "うそーん！？";
+        else if (score <= 850) msg = "うそーーーん！？";
+        else if (score <= 860) msg = "ええーうっそ！？";
+        else if (score <= 870) msg = "ええー本当！？";
+        else if (score <= 880) msg = "ええー現実！？";
+        else if (score <= 890) msg = "ええー夢かも！？";
+        else if (score <= 900) msg = "ええー信じられない！！";
+        else if (score <= 910) msg = "Amazing!!"
+        else if (score <= 920) msg = "Fantastic!!"
+        else if (score <= 930) msg = "Spectacular!!"
+        else if (score <= 940) msg = "Incredible!!"
+        else if (score <= 960) msg = "Unbelievable!!"
+        else if (score <= 999) msg = "Mind-blowing!!"
         else if (score === 1000) msg = "うわああ！パーフェクト！！";
         else if (score >= 1001) msg = "...ズルしてない？";
         resultMessage.style.display = "flex";
